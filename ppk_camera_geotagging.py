@@ -250,7 +250,8 @@ def main(args:dict):
     global RTKLIB_TEMPLATE_FILE
     RTKLIB_TEMPLATE_FILE = args.rtklib_template_file
     global POST_RTKLIB_EXE
-    POST_RTKLIB_EXE = path.dirname(__file__) \
+    POST_RTKLIB_EXE = \
+        environ.get("MGNSS_EXTDIR", ".") \
         + "/ext/rtklib_2.4.3_b34/app/consapp/rnx2rtkp/gcc/rnx2rtkp"
     if not path.isfile(POST_RTKLIB_EXE):
         print("ERROR: rtklib application (rnx2rtkp) is not prepared.")
@@ -277,8 +278,9 @@ def main(args:dict):
     df.to_csv(args.out, index=False)
     print("out:{} ({})".format(args.out, len(df)))
 
-import argparse
+
 if __name__ == "__main__":
+    import argparse
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -290,7 +292,7 @@ if __name__ == "__main__":
     parser.add_argument("timestamp_file", help="Camera offset file in DJI PPK file format (*.MRK)", type=str)
     parser.add_argument("relpos", help="Reference station position (e.g., 35.657204659,140.048099674,43.7597)", type=str)
     parser.add_argument("--out", help="output camera position CSV file", default="camera_ref.csv")
-    parser.add_argument("--photo_file_prefix", help="photo file prefix", default="100_0067_", type=str, required=False)
+    parser.add_argument("--photo_file_prefix", help="photo file prefix", default="image_0001_", type=str, required=False)
     parser.add_argument("--photo_file_postfix", help="photo file prefix", default=".JPG", type=str, required=False)
     parser.add_argument("--rtklib_template_file", help="template of RTKLIB conf file", \
         default="conf/template-rnx2rtkp-conf.txt", type=str, required=False)

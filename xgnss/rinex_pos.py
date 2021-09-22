@@ -1,15 +1,13 @@
 """
 RTKLIBで用いられているPOSファイルを読み書きするためのプログラム.
-
-
 """
-import xgnss.calc_time as calc_time
 import xgnss.calc_xyz  as calc_xyz
 from numpy import floor, deg2rad, rad2deg, sign, abs, sqrt, array
-import datetime
+from datetime import datetime, timezone
 from pandas import DataFrame, Series, to_datetime
 from os import path
 
+_TIME_T_ORIGIN = 315964800 # 1980,Jan,6, 00:00:00
 
 def load(pos_file:str, param = {}) -> list:
     '''
@@ -58,8 +56,9 @@ def load(pos_file:str, param = {}) -> list:
     return pos_epoch_list
 
 
-def read_pos(line:str, pos_format):
-    '''Parse one line of POS file in specific format.
+def read_pos(line: str, pos_format: str):
+    '''
+    Parse one line of POS file in specific format.
     '''
     itm = line[:-1].split()
 #00000000001111111111222222222233333333334444444444555555555566666666667777777777888888888899999999990000000000111111111122222222223333333333
@@ -78,13 +77,15 @@ def read_pos(line:str, pos_format):
     if itm[0].find('/') == 4 and itm[1].find(':') == 2:
         yy,mm,dd = int(itm[0][0:4]),int(itm[0][5:7]),int(itm[0][8:10])
         hr,mn,sc = int(itm[1][0:2]),int(itm[1][3:5]),float(itm[1][6:-1])
-        t = calc_time.date2t(yy,mm,dd,hr,mn,sc)
-        wk, tow = calc_time.t2gpstime(t)
+        sc_int = int(sc)
+        sc_frac = sc % 1
+        t = datetime(yy,mm,dd,hr,mn,sc_int,int(sc_frac*1E6), tzinfo=timezone.utc).timestamp()
+        tow = (t - _TIME_T_ORIGIN) % 604800
+        wk = int((t - _TIME_T_ORIGIN - tow)/604800)
     elif len(itm[0]) == 4:
         wk, tow = int(itm[0]), float(itm[1])
     pos_epoch = {'gpsweek':wk, 'gpstow': tow}
-    yy,mm,dy,hr,mn,sc = calc_time.t2date(calc_time.gpstime2t(wk, tow))
-    pos_epoch['datetime'] = datetime.datetime(yy,mm,dy,hr,mn, int(floor(sc)), int(1E6 * (sc - floor(sc))))
+    pos_epoch['datetime'] = datetime.fromtimestamp(wk*604800 + tow + _TIME_T_ORIGIN, tz=timezone.utc)
 
     #
     # Read position
