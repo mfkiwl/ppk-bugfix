@@ -7,7 +7,11 @@ build:
 	. build.sh
 test:
 	@echo test
-	python3 ppk_camera_geotagging.py sample/100_0067_Rinex.obs sample/02250780.20o sample/02250780.20n sample/100_0067_Timestamp.MRK 35.657204659,140.048099674,43.7597 --rtklib_template_file=./conf/template-rnx2rtkp-conf.txt
+	python3 ppk_camera_geotagging.py \
+	    sample/100_0067_Rinex.obs sample/02250780.20o sample/02250780.20n sample/100_0067_Timestamp.MRK \
+	    35.657204659,140.048099674,43.7597 \
+		--rtklib_template_file=./conf/template-rnx2rtkp-conf.txt \
+		--photo_file_prefix=100_0067_
 clean:
 	@echo clean
 	. clean.sh

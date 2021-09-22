@@ -112,7 +112,7 @@ $ popd
 (2) python の環境設定を行います。このディレクトリにあるxgnss 以下にあるファイルを利用します。python3 でnumpy と pandas を利用します。
 
 ```
-$ python3 -m pip install -r requirementx.txt
+$ python3 -m pip install -r requirements.txt
 $ export PYTHONPATH=`pwd`:$PYTHONPATH
 ```
 
@@ -139,8 +139,12 @@ positional arguments:
 サンプルは以下のように実行できます。
 
 ```
-$ tar xfvz <コード一式>.tar.gz
-$ python3 -m pip install requirementx.txt
+$ make test
+```
+
+以下が実行されます。
+
+```
 $ python3 ppk_camera_geotagging.py ¥
     sample/100_0067_Rinex.obs ¥
     sample/02250780.20o ¥
@@ -152,8 +156,6 @@ $ python3 ppk_camera_geotagging.py ¥
 
 実行すると、metashape で参照することができるカメラの位置情報のCSVファイルが生成されます。(camera_ref.csv)
 また、中間ファイルは ./ppk_proc/ に生成されます。
-
-同じ内容は make test で実行できます。
 
 # 捕捉
 

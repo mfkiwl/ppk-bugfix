@@ -17,7 +17,7 @@ from xgnss.calc_xyz import xyz2llh, enu2xyz
 ### RTKLIBの後処理測位計算プログラム.
 POS_ACC_MIN = 0.030
 POST_RTKLIB_EXE = "rnx2rtkp" # Must be in $PATH
-RTKLIB_TEMPLATE_FILE = environ.get("MGNSS_EXTDIR", ".") + "/ext/rtklib/data/template-rnx2rtkp-conf.txt"
+RTKLIB_TEMPLATE_FILE = environ.get("PPK_EXTDIR", ".") + "/ext/rtklib/data/template-rnx2rtkp-conf.txt"
 
 TIME_T_ORIGIN = 315964800 # 1980,Jan,6, 00:00:00
 RE_WGS84 = 6378137.0   # radius of earth
